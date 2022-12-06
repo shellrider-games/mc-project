@@ -16,6 +16,7 @@
         android:enabled="false"
         android:focusable="auto"
         android:src="@drawable/done_48px"
+        android:textAppearance="?attr/textAppearanceHeadline1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -26,7 +27,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="Create new encounter"
-        android:textColor="@color/black"
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
