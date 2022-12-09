@@ -6,15 +6,16 @@ import androidx.lifecycle.LiveData
 import com.shellrider.minipainter.datamodel.Miniature
 import com.shellrider.minipainter.datamodel.MiniatureRepository
 import com.shellrider.minipainter.datamodel.MiniatureRoomDatabase
+import com.shellrider.minipainter.datamodel.MiniatureWithPrimaryImage
 
 class HomeScreenViewModel(application: Application) : AndroidViewModel(application) {
-    val miniatures: LiveData<List<Miniature>>
+    val miniaturesWithPrimaryImage: LiveData<List<MiniatureWithPrimaryImage>>
 
     init {
         val db = MiniatureRoomDatabase.getDatabase(application)
         val miniatureDao = db.miniatureDao()
         val repository = MiniatureRepository(miniatureDao)
 
-        miniatures = repository.miniatures
+        miniaturesWithPrimaryImage = repository.miniaturesWithPrimaryImages
     }
 }

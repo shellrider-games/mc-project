@@ -1,13 +1,12 @@
 package com.shellrider.minipainter.datamodel
 
 import android.content.Context
-import androidx.room.AutoMigration
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
+import java.util.*
 
 @Database(entities = [Image::class, Miniature::class], version = 1, exportSchema = true)
-public abstract class MiniatureRoomDatabase : RoomDatabase() {
+@TypeConverters(Converters::class)
+abstract class MiniatureRoomDatabase : RoomDatabase() {
     abstract fun imageDao(): ImageDao
     abstract fun miniatureDao(): MiniatureDao
 
@@ -27,4 +26,17 @@ public abstract class MiniatureRoomDatabase : RoomDatabase() {
             }
         }
     }
+}
+
+class Converters {
+    @TypeConverter
+    fun fromTimestamp(value: Long?): Date? {
+        return value?.let { Date(it) }
+    }
+
+    @TypeConverter
+    fun dateToTimestamp(date: Date?): Long? {
+        return if (date == null) null else date.time
+    }
+
 }

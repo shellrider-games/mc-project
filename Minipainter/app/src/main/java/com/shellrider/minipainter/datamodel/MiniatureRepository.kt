@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.StateFlow
 
 class MiniatureRepository(private val miniatureDao: MiniatureDao) {
     val miniatures = miniatureDao.getAllMiniatures()
+    val miniaturesWithPrimaryImages = miniatureDao.getAllMiniaturesWithPrimaryImages()
 }
