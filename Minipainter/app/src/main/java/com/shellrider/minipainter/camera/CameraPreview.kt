@@ -15,8 +15,7 @@ fun CameraPreview(
     onUseCase: (UseCase) -> Unit
 ) {
     AndroidView(
-        modifier = modifier
-        ,factory = { context ->
+        modifier = modifier, factory = { context ->
             val previewView = PreviewView(context).apply {
                 this.scaleType = scaleType
                 layoutParams = ViewGroup.LayoutParams(
@@ -26,8 +25,8 @@ fun CameraPreview(
             }
             onUseCase(
                 Preview.Builder()
-                .build()
-                .also { it.setSurfaceProvider(previewView.surfaceProvider) }
+                    .build()
+                    .also { it.setSurfaceProvider(previewView.surfaceProvider) }
             )
             previewView
         }

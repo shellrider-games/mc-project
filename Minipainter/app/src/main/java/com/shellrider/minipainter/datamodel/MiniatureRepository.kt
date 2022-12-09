@@ -1,9 +1,19 @@
 package com.shellrider.minipainter.datamodel
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import androidx.lifecycle.LiveData
+import kotlinx.coroutines.runBlocking
 
 class MiniatureRepository(private val miniatureDao: MiniatureDao) {
     val miniatures = miniatureDao.getAllMiniatures()
     val miniaturesWithPrimaryImages = miniatureDao.getAllMiniaturesWithPrimaryImages()
+
+    fun insertMiniature(miniature: Miniature) {
+        runBlocking {
+            miniatureDao.insertMiniature(miniature)
+        }
+    }
+
+    fun getMiniature(id: Int): LiveData<MiniatureWithPrimaryImage> {
+        return miniatureDao.getMiniature(id.toString())
+    }
 }

@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import com.shellrider.minipainter.ui.theme.MainColor
 
@@ -15,7 +14,7 @@ import com.shellrider.minipainter.ui.theme.MainColor
 fun BottomNavigationBar(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit = { }
-){
+) {
     Row(
         modifier = modifier
             .padding(

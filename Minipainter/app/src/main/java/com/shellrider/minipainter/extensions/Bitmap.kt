@@ -15,17 +15,17 @@ fun Bitmap.rotateAccordingToExifInterface(exifInterface: ExifInterface): Bitmap 
         ExifInterface.ORIENTATION_UNDEFINED
     )
     val matrix = rotationMatrix(orientation)
-    return Bitmap.createBitmap(this,0,0,width,height,matrix,true)
+    return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
 }
 
-fun rotationMatrix(exifOrientation: Int) : Matrix {
+fun rotationMatrix(exifOrientation: Int): Matrix {
     val matrix = Matrix()
-    when(exifOrientation) {
-        ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matrix.setScale(-1f,1f)
+    when (exifOrientation) {
+        ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> matrix.setScale(-1f, 1f)
         ExifInterface.ORIENTATION_ROTATE_180 -> matrix.setRotate(180f)
         ExifInterface.ORIENTATION_FLIP_VERTICAL -> {
             matrix.setRotate(180f)
-            matrix.postScale(-1f,1f)
+            matrix.postScale(-1f, 1f)
         }
         ExifInterface.ORIENTATION_TRANSPOSE -> {
             matrix.setRotate(90f)

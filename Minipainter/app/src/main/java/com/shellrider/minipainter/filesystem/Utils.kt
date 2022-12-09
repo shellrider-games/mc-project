@@ -6,7 +6,7 @@ import android.os.Environment
 import android.util.Log
 import java.io.File
 import java.io.FileOutputStream
-import java.util.UUID
+import java.util.*
 
 const val LOG_TAG = "MinipainterFilesystem"
 const val ALBUM_NAME = "minipainter"
@@ -74,13 +74,17 @@ fun writeBitmapToStorage(
 fun writeBitmapToCache(
     context: Context,
     bitmap: Bitmap
-) : String? {
-    var file = File(context.cacheDir,UUID.randomUUID().toString() + ".png")
+): String? {
+    var file = File(context.cacheDir, UUID.randomUUID().toString() + ".png")
     try {
-        bitmap.compress(Bitmap.CompressFormat.PNG,100,FileOutputStream(file))
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(file))
         return file.absolutePath
-    } catch (ex: Exception){
+    } catch (ex: Exception) {
         Log.e(LOG_TAG, "Error while saving bitmap to Cache", ex)
     }
     return null
+}
+
+fun imageNameToPath(context: Context, imageName: String): String {
+    return "${getAppSpecificAlbumStorageDir(context, ALBUM_NAME)}/$imageName.png"
 }

@@ -11,12 +11,12 @@ import androidx.compose.ui.Modifier
 fun ButtonRow(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit = { }
-){
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
-    ){
+    ) {
         content()
     }
 }

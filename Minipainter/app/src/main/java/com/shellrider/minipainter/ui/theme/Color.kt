@@ -14,3 +14,4 @@ val CardColor = Color.White
 val IconsOnNavigationColor = Color.White
 val SecondaryColor = Color(0xFF4C4C4C)
 val DisabledColor = Color(0xFFD0D0D0)
+val LightTextColor = Color(0x99000000)

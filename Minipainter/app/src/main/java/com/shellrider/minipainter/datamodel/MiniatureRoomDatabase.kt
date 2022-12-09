@@ -15,7 +15,7 @@ abstract class MiniatureRoomDatabase : RoomDatabase() {
         private var INSTANCE: MiniatureRoomDatabase? = null
 
         fun getDatabase(context: Context): MiniatureRoomDatabase {
-            return INSTANCE ?: synchronized(this){
+            return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     MiniatureRoomDatabase::class.java,

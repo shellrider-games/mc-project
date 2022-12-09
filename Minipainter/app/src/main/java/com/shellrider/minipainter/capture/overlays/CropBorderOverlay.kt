@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CropBorderOverlay() {
     Canvas(modifier = Modifier.fillMaxSize()) {
-        val rect =  Rect(
-            offset = Offset((size.width-320.dp.toPx())/2, (size.height-320.dp.toPx())/2),
+        val rect = Rect(
+            offset = Offset((size.width - 320.dp.toPx()) / 2, (size.height - 320.dp.toPx()) / 2),
             size = Size(320.dp.toPx(), 320.dp.toPx())
         )
 
@@ -30,13 +30,13 @@ fun CropBorderOverlay() {
         }
         clipPath(clip, clipOp = ClipOp.Difference) {
             drawRect(
-                Color.hsl(0.0f,0.0f,0.0f,0.6f),
+                Color.hsl(0.0f, 0.0f, 0.0f, 0.6f),
             )
         }
         drawRoundRect(
             color = Color.White,
             size = Size(320.dp.toPx(), 320.dp.toPx()),
-            topLeft = Offset((size.width-320.dp.toPx())/2, (size.height-320.dp.toPx())/2),
+            topLeft = Offset((size.width - 320.dp.toPx()) / 2, (size.height - 320.dp.toPx()) / 2),
             style = Stroke(width = 3.dp.toPx()),
             cornerRadius = CornerRadius(10.dp.toPx(), 10.dp.toPx())
         )

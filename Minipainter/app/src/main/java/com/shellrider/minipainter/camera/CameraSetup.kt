@@ -10,9 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.concurrent.Executor
-import kotlin.coroutines.suspendCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 suspend fun Context.getCameraProvider(): ProcessCameraProvider = suspendCoroutine { continuation ->
     ProcessCameraProvider.getInstance(this).also { future ->
@@ -41,6 +41,7 @@ suspend fun ImageCapture.takePicture(executor: Executor): File {
             override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                 continuation.resume(photoFile)
             }
+
             override fun onError(ex: ImageCaptureException) {
                 Log.e("TakePicture", "Image capture failed", ex)
                 continuation.resumeWithException(ex)
