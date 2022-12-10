@@ -2,18 +2,18 @@ package com.shellrider.minipainter.screens
 
 import android.app.Application
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -27,6 +27,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.shellrider.minipainter.filesystem.imageNameToPath
 import com.shellrider.minipainter.ui.components.TopBackground
+import com.shellrider.minipainter.ui.theme.LightTextColor
 import com.shellrider.minipainter.ui.theme.OnMainColor
 import com.shellrider.minipainter.viewmodels.MiniatureDetailsViewModel
 
@@ -35,6 +36,7 @@ fun MiniatureDetails(
     navController: NavController,
     miniatureId: Int?
 ) {
+
     val context = LocalContext.current
     val viewModel: MiniatureDetailsViewModel? = LocalViewModelStoreOwner.current?.let {
         val viewModel: MiniatureDetailsViewModel = viewModel(
@@ -50,17 +52,21 @@ fun MiniatureDetails(
         )
         viewModel
     }
+
     if (miniatureId == null) return
     if (viewModel?.miniature == null) return
     val miniature by viewModel.miniature.observeAsState()
     if (miniature == null) return
+
     var lazyColumnSize by remember { mutableStateOf(IntSize.Zero) }
     var density = LocalDensity.current.density
+    var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
+
     Column(Modifier.fillMaxSize()) {
         TopBackground(text = miniature?.miniature?.name) {
             IconButton(
                 modifier = Modifier.align(Alignment.End),
-                onClick = { /*TODO*/ },
+                onClick = { showDeleteDialog = true },
             ) {
                 Icon(
                     Icons.Outlined.Delete,
@@ -76,21 +82,43 @@ fun MiniatureDetails(
                     lazyColumnSize = it.size
                 },
         ) {
-                item {
-                    Image(
-                        modifier = Modifier
-                            .height((lazyColumnSize.width / density).toInt().dp)
-                            .fillParentMaxWidth()
-                        ,
-                        painter = rememberAsyncImagePainter(miniature?.image?.filename?.let {
-                            imageNameToPath(
-                                context,
-                                it
-                            )
-                        }), contentDescription = "Miniature image"
-                    )
-                }
+            item {
+                Image(
+                    modifier = Modifier
+                        .height((lazyColumnSize.width / density).toInt().dp)
+                        .fillParentMaxWidth(),
+                    painter = rememberAsyncImagePainter(miniature?.image?.filename?.let {
+                        imageNameToPath(
+                            context,
+                            it
+                        )
+                    }), contentDescription = "Miniature image"
+                )
+            }
 
+        }
+
+        if (showDeleteDialog) {
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false },
+                title = { Text(text = "Delete ${miniature?.miniature?.name}") },
+                text = {
+                    Text(
+                        text = "This will permanently delete ${miniature?.miniature?.name}" +
+                                " and all related data. Press delete to confirm"
+                    )
+                },
+                confirmButton = {
+                    TextButton(onClick = { showDeleteDialog = false }) {
+                        Text("delete")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDeleteDialog = false }) {
+                        Text("cancel", color = LightTextColor)
+                    }
+                }
+            )
         }
     }
 }
