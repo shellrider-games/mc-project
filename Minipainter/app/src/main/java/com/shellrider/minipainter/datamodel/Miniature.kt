@@ -11,7 +11,8 @@ data class Miniature(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val name: String,
     val lastUpdated: Date? = null,
-    val primaryImageId: Int
+    val primaryImageId: Int,
+    val progress: Float = 0.0f
 )
 
 data class MiniatureWithPrimaryImage(

@@ -25,12 +25,13 @@ fun TopBackground(
                 text = text
             )
         }
-        Box(modifier = Modifier
-            .align(Alignment.TopEnd)
-            .fillMaxHeight()
-            .padding(horizontal = 24.dp),
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .fillMaxHeight()
+                .padding(horizontal = 24.dp),
             contentAlignment = Alignment.Center,
-        ){
+        ) {
             content()
         }
     }

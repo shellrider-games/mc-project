@@ -16,4 +16,17 @@ class MiniatureRepository(private val miniatureDao: MiniatureDao) {
     fun getMiniature(id: Int): LiveData<MiniatureWithPrimaryImage> {
         return miniatureDao.getMiniature(id.toString())
     }
+
+    fun deleteMiniature(miniature: Miniature) {
+        runBlocking {
+            miniatureDao.deleteMiniature(miniature)
+        }
+    }
+
+    fun updateMiniature(miniature: Miniature){
+        runBlocking {
+            miniatureDao.updateMiniature(miniature)
+        }
+    }
+
 }

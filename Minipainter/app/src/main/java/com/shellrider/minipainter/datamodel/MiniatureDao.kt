@@ -1,10 +1,7 @@
 package com.shellrider.minipainter.datamodel
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 
 @Dao
 interface MiniatureDao {
@@ -21,5 +18,12 @@ interface MiniatureDao {
     @Transaction
     @Query("SELECT * FROM miniatures")
     fun getAllMiniaturesWithPrimaryImages(): LiveData<List<MiniatureWithPrimaryImage>>
+
+    @Delete
+    suspend fun deleteMiniature(miniature: Miniature)
+
+    @Update
+    suspend fun updateMiniature(miniature: Miniature)
+
 }
 

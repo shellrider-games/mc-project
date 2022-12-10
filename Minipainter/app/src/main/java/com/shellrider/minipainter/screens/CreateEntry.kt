@@ -114,7 +114,7 @@ fun CreateEntry(
                                     writeBitmapToStorage(context, bitmap, filename)
                                     viewModel.saveEntry(filename)
                                 }
-                                navController.navigate("home")
+                                navController.popBackStack("home", false)
                             }
                         )
                     }
