@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -24,6 +27,7 @@ import com.shellrider.minipainter.R
 import com.shellrider.minipainter.ui.components.BottomNavigationBar
 import com.shellrider.minipainter.ui.components.MiniatureOverviewCard
 import com.shellrider.minipainter.ui.components.TopBackground
+import com.shellrider.minipainter.ui.theme.MainColor
 import com.shellrider.minipainter.ui.theme.OnMainColor
 import com.shellrider.minipainter.viewmodels.HomeScreenViewModel
 
@@ -44,7 +48,7 @@ fun HomeScreen(navController: NavController) {
         TopBackground("Miniatures")
         Box(modifier = Modifier.fillMaxSize()) {
             if (miniaturesViewModel != null) {
-                val miniatures by miniaturesViewModel.miniaturesWithPrimaryImage.observeAsState(
+                val miniatures by miniaturesViewModel.miniatureWithLatestProgress.observeAsState(
                     listOf()
                 )
                 val context = LocalContext.current
@@ -62,33 +66,39 @@ fun HomeScreen(navController: NavController) {
                         contentPadding = PaddingValues(top = 32.dp, bottom = 108.dp)
                     ) {
                         items(miniatures) {
-                            MiniatureOverviewCard(
-                                context = context,
-                                miniature = it,
-                                onClick = {
-                                    navController.navigate("miniature/${it.miniature.id}")
-                                }
-                            )
+                            val imageName by miniaturesViewModel.getImageFilenameFromId(it.progressEntry.imageId).observeAsState()
+                            imageName?.let { it1 ->
+                                MiniatureOverviewCard(
+                                    context = context,
+                                    miniature = it,
+                                    imageName = it1.filename,
+                                    onClick = {
+                                        navController.navigate("miniature/${it.miniature.id}")
+                                    }
+                                )
+                            }
                         }
                     }
 
                 }
             }
-            BottomNavigationBar(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 16.dp)
-            ) {
-                IconButton(onClick = { navController.navigate("camera") }) {
-                    Icon(
-                        modifier = Modifier.size(27.dp),
-                        painter = painterResource(id = R.drawable.photo_camera),
-                        contentDescription = "take new image",
-                        tint = OnMainColor
-                    )
-                }
 
+            FloatingActionButton(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(24.dp),
+                backgroundColor = MainColor,
+                onClick = { navController.navigate("camera") }
+            ) {
+                Icon(
+                    Icons.Default.Add,
+                    modifier = Modifier.size(27.dp),
+                    contentDescription = "take new image",
+                    tint = OnMainColor
+                )
             }
+
+
         }
 
     }

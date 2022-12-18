@@ -1,10 +1,8 @@
 package com.shellrider.minipainter.capture
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ExifInterface
 import android.net.Uri
-import android.util.Log
 import androidx.camera.view.PreviewView
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -15,13 +13,17 @@ import androidx.navigation.NavController
 import com.shellrider.minipainter.camera.CameraCapture
 import com.shellrider.minipainter.camera.CameraPermission
 import com.shellrider.minipainter.capture.overlays.CropBorderOverlay
+import com.shellrider.minipainter.extensions.cropFromCenter
 import com.shellrider.minipainter.extensions.rotateAccordingToExifInterface
 import com.shellrider.minipainter.filesystem.writeBitmapToCache
+import java.lang.Integer.max
 import kotlin.math.roundToInt
 
 
 @Composable
-fun FullViewWithCropBorder(navController: NavController) {
+fun NewMiniatureCapture(
+    navController: NavController
+) {
     val context = LocalContext.current
     var layoutHeight by remember { mutableStateOf(0) }
     var layoutWidth by remember { mutableStateOf(0) }
@@ -40,21 +42,11 @@ fun FullViewWithCropBorder(navController: NavController) {
                 val exifInterface = ExifInterface(file.path)
                 var bitmap = BitmapFactory.decodeFile(file.path)
                 bitmap = bitmap.rotateAccordingToExifInterface(exifInterface)
-                Log.d(
-                    "TakePicture",
-                    "Bitmap size after flip - Width: ${bitmap.width}" +
-                            " Height: ${bitmap.height}"
-                )
-                var cropWidth = (320 * localDensity * bitmap.height / layoutHeight).roundToInt()
-                bitmap = Bitmap.createBitmap(
-                    bitmap,
-                    (bitmap.width - cropWidth) / 2,
-                    (bitmap.height - cropWidth) / 2,
-                    cropWidth,
-                    cropWidth
-                )
+
+                var cropWidth = (320 * localDensity * bitmap.height / max(layoutHeight,layoutWidth)).roundToInt()
+                bitmap = bitmap.cropFromCenter(cropWidth)
+
                 val imageFilePath = writeBitmapToCache(context, bitmap)
-                Log.d("TakePicture", "Cached file at: $imageFilePath")
                 navController.navigate("create_entry/${Uri.encode(imageFilePath)}")
             }
         )

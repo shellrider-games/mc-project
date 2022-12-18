@@ -19,6 +19,7 @@ class CreateEntryViewModel(application: Application) : AndroidViewModel(applicat
 
     private lateinit var miniatureRepository: MiniatureRepository
     private lateinit var imageRepository: ImageRepository
+    private lateinit var progressEntryRepository: ProgressEntryRepository
 
     fun setCachedImagePath(cachedImagePath: String) {
         _cachedImagePath.value = cachedImagePath
@@ -32,16 +33,20 @@ class CreateEntryViewModel(application: Application) : AndroidViewModel(applicat
         val miniatureName = _miniatureName.value
         val newImage = Image(0, uuid)
         val imageId = imageRepository.insertImage(newImage)
-        val newMini = Miniature(0, miniatureName ?: "<unnamed>", Date(), imageId.toInt())
-        kotlin.run { miniatureRepository.insertMiniature(newMini) }
-
+        val newMini = Miniature(0, miniatureName ?: "<unnamed>", Date(), imageId.toInt(),)
+        val miniId = miniatureRepository.insertMiniature(newMini)
+        progressEntryRepository.insertProgressEntry(ProgressEntry
+            (0,imageId.toInt(),miniId.toInt(),"created Entry", Date())
+        )
     }
 
     init {
         val db = MiniatureRoomDatabase.getDatabase(application)
         val miniatureDao = db.miniatureDao()
         val imageDao = db.imageDao()
+        val progressEntryDao = db.progressEntryDao()
         miniatureRepository = MiniatureRepository(miniatureDao)
         imageRepository = ImageRepository(imageDao)
+        progressEntryRepository = ProgressEntryRepository(progressEntryDao)
     }
 }

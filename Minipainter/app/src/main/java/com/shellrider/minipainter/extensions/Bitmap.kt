@@ -18,6 +18,16 @@ fun Bitmap.rotateAccordingToExifInterface(exifInterface: ExifInterface): Bitmap 
     return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
 }
 
+fun Bitmap.cropFromCenter(cropWidth: Int): Bitmap{
+    return Bitmap.createBitmap(
+        this,
+        (this.width - cropWidth) / 2,
+        (this.height - cropWidth) / 2,
+        cropWidth,
+        cropWidth
+    )
+}
+
 fun rotationMatrix(exifOrientation: Int): Matrix {
     val matrix = Matrix()
     when (exifOrientation) {

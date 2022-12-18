@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.shellrider.minipainter.datamodel.MiniatureWithLatestProgress
 import com.shellrider.minipainter.datamodel.MiniatureWithPrimaryImage
 import com.shellrider.minipainter.filesystem.imageNameToPath
 import com.shellrider.minipainter.ui.theme.CardColor
@@ -27,7 +28,8 @@ import java.text.SimpleDateFormat
 @Composable
 fun MiniatureOverviewCard(
     context: Context,
-    miniature: MiniatureWithPrimaryImage,
+    miniature: MiniatureWithLatestProgress,
+    imageName: String,
     onClick: () -> Unit = {}
 ) {
     Card(
@@ -41,7 +43,7 @@ fun MiniatureOverviewCard(
                 .fillMaxWidth()
                 .height(220.dp)
         ) {
-            val imagePath = imageNameToPath(context, miniature.image.filename)
+            val imagePath = imageNameToPath(context, imageName)
             val imageFile = File(imagePath)
             Image(
                 modifier = Modifier.fillMaxWidth(),

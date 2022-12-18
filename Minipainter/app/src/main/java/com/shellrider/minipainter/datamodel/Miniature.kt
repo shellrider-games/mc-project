@@ -12,7 +12,8 @@ data class Miniature(
     val name: String,
     val lastUpdated: Date? = null,
     val primaryImageId: Int,
-    val progress: Float = 0.0f
+    val progress: Float = 0.0f,
+    val description: String? = null
 )
 
 data class MiniatureWithPrimaryImage(
@@ -22,5 +23,14 @@ data class MiniatureWithPrimaryImage(
         entityColumn = "id"
     )
     val image: Image
-
 )
+
+data class MiniatureWithLatestProgress(
+    @Embedded val miniature: Miniature,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "miniatureId"
+    )
+    var progressEntry: ProgressEntry
+)
+

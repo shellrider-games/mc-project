@@ -2,22 +2,27 @@ package com.shellrider.minipainter.screens
 
 import android.app.Application
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,10 +32,12 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.shellrider.minipainter.R
 import com.shellrider.minipainter.filesystem.imageNameToPath
 import com.shellrider.minipainter.ui.components.TopBackground
 import com.shellrider.minipainter.ui.theme.CardColor
 import com.shellrider.minipainter.ui.theme.LightTextColor
+import com.shellrider.minipainter.ui.theme.MainColor
 import com.shellrider.minipainter.ui.theme.OnMainColor
 import com.shellrider.minipainter.viewmodels.MiniatureDetailsViewModel
 
@@ -41,6 +48,8 @@ fun MiniatureDetails(
 ) {
 
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+
     val viewModel: MiniatureDetailsViewModel? = LocalViewModelStoreOwner.current?.let {
         val viewModel: MiniatureDetailsViewModel = viewModel(
             it,
@@ -61,12 +70,27 @@ fun MiniatureDetails(
     val miniature by viewModel.miniature.observeAsState()
     if (miniature == null) return
 
-    var sliderPosition by remember { mutableStateOf(viewModel.miniature.value?.miniature?.progress) }
+    //UI Cache
+    var sliderPosition by rememberSaveable {
+        mutableStateOf(viewModel.miniature.value?.miniature?.progress)
+    }
+    var modelDescriptionCache by rememberSaveable {
+        mutableStateOf(viewModel.miniature.value?.miniature?.description)
+    }
+
     var lazyColumnSize by remember { mutableStateOf(IntSize.Zero) }
     var density = LocalDensity.current.density
     var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
 
-    Column(Modifier.fillMaxSize()) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
+            }
+    ) {
         TopBackground(text = miniature?.miniature?.name) {
             IconButton(
                 modifier = Modifier.align(Alignment.End),
@@ -84,24 +108,47 @@ fun MiniatureDetails(
                 .fillMaxSize()
                 .onGloballyPositioned {
                     lazyColumnSize = it.size
-                },
+                }
+
+            ,
+            contentPadding = PaddingValues(top = 0.dp, bottom = 32.dp),
         ) {
             item {
-                Image(
-                    modifier = Modifier
-                        .height((lazyColumnSize.width / density).toInt().dp)
-                        .fillParentMaxWidth(),
-                    painter = rememberAsyncImagePainter(miniature?.image?.filename?.let {
-                        imageNameToPath(
-                            context,
-                            it
+                Box() {
+                    Image(
+                        modifier = Modifier
+                            .height((lazyColumnSize.width / density).toInt().dp)
+                            .fillParentMaxWidth()
+                            .padding(20.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                        ,
+                        painter = rememberAsyncImagePainter(miniature?.image?.filename?.let {
+                            imageNameToPath(
+                                context,
+                                it
+                            )
+                        }), contentDescription = "Miniature image"
+                    )
+                    FloatingActionButton(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(8.dp)
+                        ,
+                        backgroundColor = MainColor,
+                        onClick = { /*TODO*/ },
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(32.dp),
+                            painter = painterResource(id = R.drawable.add_a_photo),
+                            contentDescription = "Add image to miniature",
+                            tint = OnMainColor,
                         )
-                    }), contentDescription = "Miniature image"
-                )
+                    }
+                }
             }
             item {
                 Column(modifier = Modifier
-                    .padding(top = 24.dp, start = 20.dp, end = 20.dp, bottom = 32.dp)
+                    .padding(top = 24.dp, start = 20.dp, end = 20.dp, bottom = 24.dp)
                 ) {
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
@@ -124,6 +171,30 @@ fun MiniatureDetails(
 
                 }
             }
+
+            item {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                    backgroundColor = CardColor,
+                    shape = RoundedCornerShape(10.dp)
+
+                ) {
+                    OutlinedTextField(
+                        modifier = Modifier.padding(16.dp),
+                        value = modelDescriptionCache ?:"",
+                        label = {
+                                Text(text = "Description")
+                        },
+                        onValueChange = {
+                            modelDescriptionCache = it
+                            viewModel.updateDescription(it)
+                        },
+                    )
+                }
+            }
+
         }
 
         if (showDeleteDialog) {

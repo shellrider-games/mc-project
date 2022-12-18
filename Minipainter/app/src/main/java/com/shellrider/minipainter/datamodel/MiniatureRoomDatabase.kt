@@ -7,11 +7,12 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import java.util.*
 
 
-@Database(entities = [Image::class, Miniature::class], version = 2, exportSchema = true)
+@Database(entities = [Image::class, Miniature::class, ProgressEntry::class], version = 5, exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class MiniatureRoomDatabase : RoomDatabase() {
     abstract fun imageDao(): ImageDao
     abstract fun miniatureDao(): MiniatureDao
+    abstract fun progressEntryDao(): ProgressEntryDao
 
     companion object {
         @Volatile
@@ -25,6 +26,36 @@ abstract class MiniatureRoomDatabase : RoomDatabase() {
                 )
             }
         }
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "ALTER TABLE miniatures" +
+                            " ADD COLUMN description TEXT"
+                )
+            }
+        }
+        private val MIGRATION_3_4 = object : Migration(3,4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS progress_entries(" +
+                            "progressEntryId INTEGER PRIMARY KEY NOT NULL," +
+                            "imageId INTEGER NOT NULL," +
+                            "miniatureId INTEGER NOT NULL," +
+                            "description TEXT," +
+                            "timestamp INTEGER NOT NULL" +
+                            ");"
+                )
+            }
+        }
+
+        private val MIGRATION_4_5 = object : Migration(4,5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("INSERT INTO progress_entries " +
+                        "SELECT primaryImageId AS progressEntryId, primaryImageId AS imageId , id AS miniatureId, " +
+                        "'initial' AS description, lastUpdated AS timestamp " +
+                        "FROM miniatures")
+            }
+        }
 
         fun getDatabase(context: Context): MiniatureRoomDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -32,7 +63,12 @@ abstract class MiniatureRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     MiniatureRoomDatabase::class.java,
                     "miniature_database"
-                ).addMigrations(MIGRATION_1_2)
+                ).addMigrations(
+                    MIGRATION_1_2,
+                    MIGRATION_2_3,
+                    MIGRATION_3_4,
+                    MIGRATION_4_5
+                )
                     .build()
                 INSTANCE = instance
                 instance

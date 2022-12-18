@@ -14,7 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.shellrider.minipainter.capture.FullViewWithCropBorder
+import com.shellrider.minipainter.capture.NewMiniatureCapture
 import com.shellrider.minipainter.screens.CreateEntry
 import com.shellrider.minipainter.screens.HomeScreen
 import com.shellrider.minipainter.screens.MiniatureDetails
@@ -54,7 +54,7 @@ fun MinipainterApp() {
                 HomeScreen(navController)
             }
             composable("camera") {
-                FullViewWithCropBorder(navController)
+                NewMiniatureCapture(navController)
             }
             composable(
                 "create_entry/{imageLocation}",

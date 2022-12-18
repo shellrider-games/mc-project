@@ -3,6 +3,7 @@ package com.shellrider.minipainter.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.shellrider.minipainter.datamodel.Miniature
 import com.shellrider.minipainter.datamodel.MiniatureRepository
 import com.shellrider.minipainter.datamodel.MiniatureRoomDatabase
@@ -13,9 +14,13 @@ class MiniatureDetailsViewModel(application: Application, id: Int) : AndroidView
     private lateinit var repository: MiniatureRepository
 
     private var _miniature: LiveData<MiniatureWithPrimaryImage>
-
     val miniature: LiveData<MiniatureWithPrimaryImage>
         get() = _miniature
+
+    private var _sliderPositionCache = MutableLiveData<Float>()
+    val sliderPositionCache: LiveData<Float>
+        get() = _sliderPositionCache
+
 
     init {
         val db = MiniatureRoomDatabase.getDatabase(application)
@@ -32,9 +37,23 @@ class MiniatureDetailsViewModel(application: Application, id: Int) : AndroidView
         _miniature.value?.miniature.let {
             if (it != null) {
                 repository.updateMiniature(
-                    Miniature(it.id, it.name, Date(),it.primaryImageId,progress)
+                    Miniature(it.id, it.name, Date(),it.primaryImageId,progress,it.description)
                 )
             }
         }
+    }
+
+    fun updateDescription(description: String?) {
+        _miniature.value?.miniature.let {
+            if(it != null) {
+                repository.updateMiniature(
+                    Miniature(it.id, it.name, Date(),it.primaryImageId,it.progress,description)
+                )
+            }
+        }
+    }
+
+    fun initSliderPositionCache(value: Float){
+        _sliderPositionCache.value = value
     }
 }

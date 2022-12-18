@@ -6,9 +6,11 @@ import kotlinx.coroutines.runBlocking
 class MiniatureRepository(private val miniatureDao: MiniatureDao) {
     val miniatures = miniatureDao.getAllMiniatures()
     val miniaturesWithPrimaryImages = miniatureDao.getAllMiniaturesWithPrimaryImages()
+    val miniatureWithLatestProgress = miniatureDao.getMiniaturesWithNewestEntry()
 
-    fun insertMiniature(miniature: Miniature) {
-        runBlocking {
+
+    fun insertMiniature(miniature: Miniature): Long{
+        return runBlocking {
             miniatureDao.insertMiniature(miniature)
         }
     }
