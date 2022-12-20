@@ -34,3 +34,13 @@ data class MiniatureWithLatestProgress(
     var progressEntry: ProgressEntry
 )
 
+data class MiniatureWithProgress(
+    @Embedded val miniature: Miniature,
+    @Relation(
+        entity = ProgressEntry::class,
+        parentColumn = "id",
+        entityColumn = "miniatureId"
+    )
+    var progressEntries: List<ProgressEntryWithImage>
+)
+

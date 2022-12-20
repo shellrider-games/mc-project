@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.shellrider.minipainter.datamodel.MiniatureWithLatestProgress
-import com.shellrider.minipainter.datamodel.MiniatureWithPrimaryImage
 import com.shellrider.minipainter.filesystem.imageNameToPath
 import com.shellrider.minipainter.ui.theme.CardColor
 import com.shellrider.minipainter.ui.theme.LightTextColor

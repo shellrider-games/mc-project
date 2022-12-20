@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
@@ -16,15 +15,12 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.shellrider.minipainter.R
-import com.shellrider.minipainter.ui.components.BottomNavigationBar
 import com.shellrider.minipainter.ui.components.MiniatureOverviewCard
 import com.shellrider.minipainter.ui.components.TopBackground
 import com.shellrider.minipainter.ui.theme.MainColor
@@ -44,7 +40,7 @@ fun HomeScreen(navController: NavController) {
         )
         viewModel
     }
-    Column() {
+    Column {
         TopBackground("Miniatures")
         Box(modifier = Modifier.fillMaxSize()) {
             if (miniaturesViewModel != null) {
@@ -66,7 +62,8 @@ fun HomeScreen(navController: NavController) {
                         contentPadding = PaddingValues(top = 32.dp, bottom = 108.dp)
                     ) {
                         items(miniatures) {
-                            val imageName by miniaturesViewModel.getImageFilenameFromId(it.progressEntry.imageId).observeAsState()
+                            val imageName by miniaturesViewModel.getImageFilenameFromId(it.progressEntry.imageId)
+                                .observeAsState()
                             imageName?.let { it1 ->
                                 MiniatureOverviewCard(
                                     context = context,

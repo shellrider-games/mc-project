@@ -6,9 +6,9 @@ import androidx.lifecycle.LiveData
 import com.shellrider.minipainter.datamodel.*
 
 class HomeScreenViewModel(application: Application) : AndroidViewModel(application) {
-    val miniaturesWithPrimaryImage: LiveData<List<MiniatureWithPrimaryImage>>
+    private val miniaturesWithPrimaryImage: LiveData<List<MiniatureWithPrimaryImage>>
     val miniatureWithLatestProgress: LiveData<List<MiniatureWithLatestProgress>>
-    lateinit var imageRepository: ImageRepository
+    var imageRepository: ImageRepository
 
     init {
         val db = MiniatureRoomDatabase.getDatabase(application)
@@ -20,7 +20,7 @@ class HomeScreenViewModel(application: Application) : AndroidViewModel(applicati
         imageRepository = ImageRepository(imageDao)
     }
 
-    fun getImageFilenameFromId(id: Int): LiveData<Image>{
+    fun getImageFilenameFromId(id: Int): LiveData<Image> {
         return imageRepository.getImage(id)
     }
 }

@@ -7,7 +7,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import java.util.*
 
 
-@Database(entities = [Image::class, Miniature::class, ProgressEntry::class], version = 5, exportSchema = true)
+@Database(
+    entities = [Image::class, Miniature::class, ProgressEntry::class],
+    version = 5,
+    exportSchema = true
+)
 @TypeConverters(Converters::class)
 abstract class MiniatureRoomDatabase : RoomDatabase() {
     abstract fun imageDao(): ImageDao
@@ -34,7 +38,7 @@ abstract class MiniatureRoomDatabase : RoomDatabase() {
                 )
             }
         }
-        private val MIGRATION_3_4 = object : Migration(3,4) {
+        private val MIGRATION_3_4 = object : Migration(3, 4) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
                     "CREATE TABLE IF NOT EXISTS progress_entries(" +
@@ -48,12 +52,14 @@ abstract class MiniatureRoomDatabase : RoomDatabase() {
             }
         }
 
-        private val MIGRATION_4_5 = object : Migration(4,5) {
+        private val MIGRATION_4_5 = object : Migration(4, 5) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("INSERT INTO progress_entries " +
-                        "SELECT primaryImageId AS progressEntryId, primaryImageId AS imageId , id AS miniatureId, " +
-                        "'initial' AS description, lastUpdated AS timestamp " +
-                        "FROM miniatures")
+                database.execSQL(
+                    "INSERT INTO progress_entries " +
+                            "SELECT primaryImageId AS progressEntryId, primaryImageId AS imageId , id AS miniatureId, " +
+                            "'initial' AS description, lastUpdated AS timestamp " +
+                            "FROM miniatures"
+                )
             }
         }
 

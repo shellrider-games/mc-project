@@ -18,7 +18,7 @@ fun Bitmap.rotateAccordingToExifInterface(exifInterface: ExifInterface): Bitmap 
     return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
 }
 
-fun Bitmap.cropFromCenter(cropWidth: Int): Bitmap{
+fun Bitmap.cropFromCenter(cropWidth: Int): Bitmap {
     return Bitmap.createBitmap(
         this,
         (this.width - cropWidth) / 2,

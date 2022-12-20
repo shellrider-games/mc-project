@@ -7,15 +7,15 @@ import androidx.lifecycle.MutableLiveData
 import com.shellrider.minipainter.datamodel.*
 import java.util.*
 
+class AddProgressEntryViewModel(application: Application) : AndroidViewModel(application) {
 
-class CreateEntryViewModel(application: Application) : AndroidViewModel(application) {
     private val _cachedImagePath = MutableLiveData<String>()
     val cachedImagePath: LiveData<String>
         get() = _cachedImagePath
 
-    private val _miniatureName = MutableLiveData<String>()
-    val miniatureName: LiveData<String>
-        get() = _miniatureName
+    private val _description = MutableLiveData<String>()
+    val description: LiveData<String>
+        get() = _description
 
     private var miniatureRepository: MiniatureRepository
     private var imageRepository: ImageRepository
@@ -25,20 +25,8 @@ class CreateEntryViewModel(application: Application) : AndroidViewModel(applicat
         _cachedImagePath.value = cachedImagePath
     }
 
-    fun setMiniatureName(miniatureName: String) {
-        _miniatureName.value = miniatureName
-    }
-
-    fun saveEntry(uuid: String) {
-        val miniatureName = _miniatureName.value
-        val newImage = Image(0, uuid)
-        val imageId = imageRepository.insertImage(newImage)
-        val newMini = Miniature(0, miniatureName ?: "<unnamed>", Date(), imageId.toInt())
-        val miniId = miniatureRepository.insertMiniature(newMini)
-        progressEntryRepository.insertProgressEntry(
-            ProgressEntry
-                (0, imageId.toInt(), miniId.toInt(), "created Entry", Date())
-        )
+    fun setDescription(description: String) {
+        _description.value = description
     }
 
     init {
@@ -50,4 +38,13 @@ class CreateEntryViewModel(application: Application) : AndroidViewModel(applicat
         imageRepository = ImageRepository(imageDao)
         progressEntryRepository = ProgressEntryRepository(progressEntryDao)
     }
+
+    fun saveEntry(uuid: String, miniatureId: Int) {
+        val newImage = Image(0, uuid)
+        val imageId = imageRepository.insertImage(newImage)
+        progressEntryRepository.insertProgressEntry(
+            ProgressEntry(0, imageId.toInt(), miniatureId, _description.value, Date())
+        )
+    }
+
 }

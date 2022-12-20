@@ -1,11 +1,10 @@
 package com.shellrider.minipainter.datamodel
 
-import androidx.room.DatabaseView
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.Relation
-import java.util.Date
+import java.util.*
 
 @Entity(tableName = "progress_entries")
 data class ProgressEntry(
@@ -17,7 +16,7 @@ data class ProgressEntry(
 )
 
 data class ProgressEntryWithImage(
-    @Embedded val progressEntry : ProgressEntry,
+    @Embedded val progressEntry: ProgressEntry,
     @Relation(
         parentColumn = "imageId",
         entityColumn = "id"

@@ -7,14 +7,14 @@ import androidx.lifecycle.MutableLiveData
 import com.shellrider.minipainter.datamodel.Miniature
 import com.shellrider.minipainter.datamodel.MiniatureRepository
 import com.shellrider.minipainter.datamodel.MiniatureRoomDatabase
-import com.shellrider.minipainter.datamodel.MiniatureWithPrimaryImage
+import com.shellrider.minipainter.datamodel.MiniatureWithProgress
 import java.util.*
 
 class MiniatureDetailsViewModel(application: Application, id: Int) : AndroidViewModel(application) {
     private lateinit var repository: MiniatureRepository
 
-    private var _miniature: LiveData<MiniatureWithPrimaryImage>
-    val miniature: LiveData<MiniatureWithPrimaryImage>
+    private var _miniature: LiveData<MiniatureWithProgress>
+    val miniature: LiveData<MiniatureWithProgress>
         get() = _miniature
 
     private var _sliderPositionCache = MutableLiveData<Float>()
@@ -26,18 +26,18 @@ class MiniatureDetailsViewModel(application: Application, id: Int) : AndroidView
         val db = MiniatureRoomDatabase.getDatabase(application)
         val miniatureDao = db.miniatureDao()
         repository = MiniatureRepository(miniatureDao)
-        _miniature = repository.getMiniature(id)
+        _miniature = repository.getMiniatureWithProgress(id)
     }
 
     fun deleteRequested() {
         _miniature.value?.let { repository.deleteMiniature(it.miniature) }
     }
 
-    fun updateProgress(progress: Float){
+    fun updateProgress(progress: Float) {
         _miniature.value?.miniature.let {
             if (it != null) {
                 repository.updateMiniature(
-                    Miniature(it.id, it.name, Date(),it.primaryImageId,progress,it.description)
+                    Miniature(it.id, it.name, Date(), it.primaryImageId, progress, it.description)
                 )
             }
         }
@@ -45,15 +45,15 @@ class MiniatureDetailsViewModel(application: Application, id: Int) : AndroidView
 
     fun updateDescription(description: String?) {
         _miniature.value?.miniature.let {
-            if(it != null) {
+            if (it != null) {
                 repository.updateMiniature(
-                    Miniature(it.id, it.name, Date(),it.primaryImageId,it.progress,description)
+                    Miniature(it.id, it.name, Date(), it.primaryImageId, it.progress, description)
                 )
             }
         }
     }
 
-    fun initSliderPositionCache(value: Float){
+    fun initSliderPositionCache(value: Float) {
         _sliderPositionCache.value = value
     }
 }

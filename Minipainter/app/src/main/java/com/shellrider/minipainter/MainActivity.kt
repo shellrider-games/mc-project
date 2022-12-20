@@ -15,6 +15,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.shellrider.minipainter.capture.NewMiniatureCapture
+import com.shellrider.minipainter.capture.NewProgressEntryCapture
+import com.shellrider.minipainter.screens.AddProgressEntry
 import com.shellrider.minipainter.screens.CreateEntry
 import com.shellrider.minipainter.screens.HomeScreen
 import com.shellrider.minipainter.screens.MiniatureDetails
@@ -78,6 +80,41 @@ fun MinipainterApp() {
                     navController = navController,
                     miniatureId = backStackEntry.arguments?.getInt("id")
                 )
+            }
+            composable(
+                "progress_entry_capture/{id}",
+                arguments = listOf(
+                    navArgument("id") {
+                        type = NavType.IntType
+                    }
+                )) { backStackEntry ->
+                backStackEntry.arguments?.getInt("id")
+                    ?.let {
+                        NewProgressEntryCapture(
+                            navController = navController,
+                            miniatureId = it
+                        )
+                    }
+            }
+            composable(
+                "add_progress_entry/{id}/{imageLocation}",
+                arguments = listOf(
+                    navArgument("id") {
+                        type = NavType.IntType
+                    },
+                    navArgument("imageLocation") {
+                        type = NavType.StringType
+                    }
+                )) { backStackEntry ->
+                val miniatureId = backStackEntry.arguments?.getInt("id")
+                val imageLocation = backStackEntry.arguments?.getString("imageLocation")
+                if (imageLocation != null && miniatureId != null) {
+                    AddProgressEntry(
+                        navController = navController,
+                        imageLocation = imageLocation,
+                        miniatureId = miniatureId
+                    )
+                }
             }
         }
     }

@@ -12,13 +12,19 @@ interface MiniatureDao {
     @Query("SELECT * FROM miniatures WHERE id=:id")
     fun getMiniature(id: String): LiveData<MiniatureWithPrimaryImage>
 
-    @Query("SELECT * FROM miniatures JOIN\n" +
-            "(SELECT progress_entries.progressEntryId, progress_entries.imageId, progress_entries.miniatureId, progress_entries.description, progress_entries.timestamp FROM progress_entries,\n" +
-            "( SELECT miniatureId, MAX(timestamp) AS timestamp FROM progress_entries GROUP BY miniatureId)\n" +
-            "newest_entry WHERE progress_entries.miniatureId = newest_entry.miniatureId AND\n" +
-            "progress_entries.timestamp = newest_entry.timestamp) progress_entry\n" +
-            "ON miniatures.id = progress_entry.miniatureId")
+    @Query(
+        "SELECT * FROM miniatures JOIN\n" +
+                "(SELECT progress_entries.progressEntryId, progress_entries.imageId, progress_entries.miniatureId, progress_entries.description, progress_entries.timestamp FROM progress_entries,\n" +
+                "( SELECT miniatureId, MAX(timestamp) AS timestamp FROM progress_entries GROUP BY miniatureId)\n" +
+                "newest_entry WHERE progress_entries.miniatureId = newest_entry.miniatureId AND\n" +
+                "progress_entries.timestamp = newest_entry.timestamp) progress_entry\n" +
+                "ON miniatures.id = progress_entry.miniatureId"
+    )
     fun getMiniaturesWithNewestEntry(): LiveData<List<MiniatureWithLatestProgress>>
+
+    @Transaction
+    @Query("SELECT * FROM miniatures WHERE id=:id")
+    fun getMiniatureWithProgress(id: String): LiveData<MiniatureWithProgress>
 
     @Insert
     suspend fun insertMiniature(miniature: Miniature): Long

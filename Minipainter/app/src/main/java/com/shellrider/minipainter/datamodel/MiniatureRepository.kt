@@ -9,7 +9,7 @@ class MiniatureRepository(private val miniatureDao: MiniatureDao) {
     val miniatureWithLatestProgress = miniatureDao.getMiniaturesWithNewestEntry()
 
 
-    fun insertMiniature(miniature: Miniature): Long{
+    fun insertMiniature(miniature: Miniature): Long {
         return runBlocking {
             miniatureDao.insertMiniature(miniature)
         }
@@ -19,13 +19,17 @@ class MiniatureRepository(private val miniatureDao: MiniatureDao) {
         return miniatureDao.getMiniature(id.toString())
     }
 
+    fun getMiniatureWithProgress(id: Int): LiveData<MiniatureWithProgress> {
+        return miniatureDao.getMiniatureWithProgress(id.toString())
+    }
+
     fun deleteMiniature(miniature: Miniature) {
         runBlocking {
             miniatureDao.deleteMiniature(miniature)
         }
     }
 
-    fun updateMiniature(miniature: Miniature){
+    fun updateMiniature(miniature: Miniature) {
         runBlocking {
             miniatureDao.updateMiniature(miniature)
         }

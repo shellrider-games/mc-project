@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -16,7 +15,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -82,6 +80,10 @@ fun MiniatureDetails(
     var density = LocalDensity.current.density
     var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
 
+    var progressEntries =
+        miniature!!.progressEntries.sortedByDescending { it.progressEntry.timestamp }
+    var mainImageName = progressEntries.get(0).image.filename
+
     Column(
         Modifier
             .fillMaxSize()
@@ -108,34 +110,30 @@ fun MiniatureDetails(
                 .fillMaxSize()
                 .onGloballyPositioned {
                     lazyColumnSize = it.size
-                }
-
-            ,
+                },
             contentPadding = PaddingValues(top = 0.dp, bottom = 32.dp),
         ) {
             item {
-                Box() {
+                Box {
                     Image(
                         modifier = Modifier
                             .height((lazyColumnSize.width / density).toInt().dp)
                             .fillParentMaxWidth()
                             .padding(20.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                        ,
-                        painter = rememberAsyncImagePainter(miniature?.image?.filename?.let {
+                            .clip(RoundedCornerShape(12.dp)),
+                        painter = rememberAsyncImagePainter(
                             imageNameToPath(
                                 context,
-                                it
+                                mainImageName
                             )
-                        }), contentDescription = "Miniature image"
+                        ), contentDescription = "Miniature image"
                     )
                     FloatingActionButton(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .padding(8.dp)
-                        ,
+                            .padding(8.dp),
                         backgroundColor = MainColor,
-                        onClick = { /*TODO*/ },
+                        onClick = { navController.navigate("progress_entry_capture/$miniatureId") },
                     ) {
                         Icon(
                             modifier = Modifier.size(32.dp),
@@ -147,8 +145,9 @@ fun MiniatureDetails(
                 }
             }
             item {
-                Column(modifier = Modifier
-                    .padding(top = 24.dp, start = 20.dp, end = 20.dp, bottom = 24.dp)
+                Column(
+                    modifier = Modifier
+                        .padding(top = 24.dp, start = 20.dp, end = 20.dp, bottom = 24.dp)
                 ) {
                     Text(
                         modifier = Modifier.padding(horizontal = 12.dp),
@@ -156,18 +155,18 @@ fun MiniatureDetails(
                         fontSize = 18.sp
                     )
 
-                        sliderPosition?.let { it1 ->
-                            Slider(
-                                modifier = Modifier.padding(horizontal = 12.dp),
-                                value = it1,
-                                onValueChange = {
-                                    kotlin.run {
-                                        sliderPosition = it
-                                        viewModel.updateProgress(it)
-                                    }
+                    sliderPosition?.let { it1 ->
+                        Slider(
+                            modifier = Modifier.padding(horizontal = 12.dp),
+                            value = it1,
+                            onValueChange = {
+                                kotlin.run {
+                                    sliderPosition = it
+                                    viewModel.updateProgress(it)
                                 }
-                            )
-                        }
+                            }
+                        )
+                    }
 
                 }
             }
@@ -183,9 +182,9 @@ fun MiniatureDetails(
                 ) {
                     OutlinedTextField(
                         modifier = Modifier.padding(16.dp),
-                        value = modelDescriptionCache ?:"",
+                        value = modelDescriptionCache ?: "",
                         label = {
-                                Text(text = "Description")
+                            Text(text = "Description")
                         },
                         onValueChange = {
                             modelDescriptionCache = it

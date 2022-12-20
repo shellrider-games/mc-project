@@ -16,14 +16,10 @@ import com.shellrider.minipainter.capture.overlays.CropBorderOverlay
 import com.shellrider.minipainter.extensions.cropFromCenter
 import com.shellrider.minipainter.extensions.rotateAccordingToExifInterface
 import com.shellrider.minipainter.filesystem.writeBitmapToCache
-import java.lang.Integer.max
 import kotlin.math.roundToInt
 
-
 @Composable
-fun NewMiniatureCapture(
-    navController: NavController
-) {
+fun NewProgressEntryCapture(navController: NavController, miniatureId: Int) {
     val context = LocalContext.current
     var layoutHeight by remember { mutableStateOf(0) }
     var layoutWidth by remember { mutableStateOf(0) }
@@ -43,14 +39,14 @@ fun NewMiniatureCapture(
                 var bitmap = BitmapFactory.decodeFile(file.path)
                 bitmap = bitmap.rotateAccordingToExifInterface(exifInterface)
 
-                var cropWidth = (320 * localDensity * bitmap.height / max(
+                var cropWidth = (320 * localDensity * bitmap.height / Integer.max(
                     layoutHeight,
                     layoutWidth
                 )).roundToInt()
                 bitmap = bitmap.cropFromCenter(cropWidth)
 
                 val imageFilePath = writeBitmapToCache(context, bitmap)
-                navController.navigate("create_entry/${Uri.encode(imageFilePath)}")
+                navController.navigate("add_progress_entry/$miniatureId/${Uri.encode(imageFilePath)}")
             }
         )
     }
