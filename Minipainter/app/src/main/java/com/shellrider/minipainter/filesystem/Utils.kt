@@ -23,7 +23,7 @@ fun isExternalStorageReadable(): Boolean {
     return Environment.MEDIA_MOUNTED == state || Environment.MEDIA_MOUNTED_READ_ONLY == state
 }
 
-fun getAppSpecificAlbumStorageDir(context: Context, albumName: String): File? {
+fun getAppSpecificAlbumStorageDir(context: Context, albumName: String): File {
     // Get the pictures directory that's inside the app-specific directory on
     // external storage.
     val file = File(
@@ -75,7 +75,7 @@ fun writeBitmapToCache(
     context: Context,
     bitmap: Bitmap
 ): String? {
-    var file = File(context.cacheDir, UUID.randomUUID().toString() + ".png")
+    val file = File(context.cacheDir, UUID.randomUUID().toString() + ".png")
     try {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, FileOutputStream(file))
         return file.absolutePath

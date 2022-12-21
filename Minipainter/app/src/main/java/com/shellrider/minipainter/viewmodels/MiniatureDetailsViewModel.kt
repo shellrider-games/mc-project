@@ -3,7 +3,6 @@ package com.shellrider.minipainter.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.shellrider.minipainter.datamodel.Miniature
 import com.shellrider.minipainter.datamodel.MiniatureRepository
 import com.shellrider.minipainter.datamodel.MiniatureRoomDatabase
@@ -11,16 +10,11 @@ import com.shellrider.minipainter.datamodel.MiniatureWithProgress
 import java.util.*
 
 class MiniatureDetailsViewModel(application: Application, id: Int) : AndroidViewModel(application) {
-    private lateinit var repository: MiniatureRepository
+    private var repository: MiniatureRepository
 
     private var _miniature: LiveData<MiniatureWithProgress>
     val miniature: LiveData<MiniatureWithProgress>
         get() = _miniature
-
-    private var _sliderPositionCache = MutableLiveData<Float>()
-    val sliderPositionCache: LiveData<Float>
-        get() = _sliderPositionCache
-
 
     init {
         val db = MiniatureRoomDatabase.getDatabase(application)
@@ -51,9 +45,5 @@ class MiniatureDetailsViewModel(application: Application, id: Int) : AndroidView
                 )
             }
         }
-    }
-
-    fun initSliderPositionCache(value: Float) {
-        _sliderPositionCache.value = value
     }
 }

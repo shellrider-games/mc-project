@@ -23,7 +23,7 @@ fun NewProgressEntryCapture(navController: NavController, miniatureId: Int) {
     val context = LocalContext.current
     var layoutHeight by remember { mutableStateOf(0) }
     var layoutWidth by remember { mutableStateOf(0) }
-    var localDensity = LocalDensity.current.density
+    val localDensity = LocalDensity.current.density
 
     CameraPermission {
         CameraCapture(
@@ -39,7 +39,7 @@ fun NewProgressEntryCapture(navController: NavController, miniatureId: Int) {
                 var bitmap = BitmapFactory.decodeFile(file.path)
                 bitmap = bitmap.rotateAccordingToExifInterface(exifInterface)
 
-                var cropWidth = (320 * localDensity * bitmap.height / Integer.max(
+                val cropWidth = (320 * localDensity * bitmap.height / Integer.max(
                     layoutHeight,
                     layoutWidth
                 )).roundToInt()

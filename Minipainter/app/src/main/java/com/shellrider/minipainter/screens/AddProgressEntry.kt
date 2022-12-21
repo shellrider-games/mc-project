@@ -2,7 +2,6 @@ package com.shellrider.minipainter.screens
 
 import android.app.Application
 import android.graphics.BitmapFactory
-import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,8 +38,6 @@ fun AddProgressEntry(
     imageLocation: String,
     miniatureId: Int
 ) {
-    Log.d("AddProgressEntry", "ImageLocation: $imageLocation - miniatureId: $miniatureId")
-
     val viewModel: AddProgressEntryViewModel? = LocalViewModelStoreOwner.current?.let {
         val viewModel: AddProgressEntryViewModel = viewModel(
             it,

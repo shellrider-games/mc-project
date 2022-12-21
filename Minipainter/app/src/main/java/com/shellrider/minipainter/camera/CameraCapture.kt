@@ -5,7 +5,6 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.core.UseCase
-import androidx.camera.view.PreviewView
 import androidx.camera.view.PreviewView.ScaleType
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,7 +25,7 @@ fun CameraCapture(
     modifier: Modifier = Modifier,
     cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA,
     onImageFile: (File) -> Unit = { },
-    previewScaleType: ScaleType = PreviewView.ScaleType.FIT_CENTER,
+    previewScaleType: ScaleType = ScaleType.FIT_CENTER,
     cameraOverlay: @Composable () -> Unit = { }
 ) {
     var buttonClickable by remember { mutableStateOf(true) }
@@ -64,8 +63,7 @@ fun CameraCapture(
                 onClick = {
                     if (buttonClickable) {
                         coroutineScope.launch {
-                            imageCaptureUseCase.takePicture(context.executor)
-                                .let { onImageFile(it) }
+                            onImageFile(imageCaptureUseCase.takePicture(context.executor))
                         }
                         buttonClickable = false
                     }

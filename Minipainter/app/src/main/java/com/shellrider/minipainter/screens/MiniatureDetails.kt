@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -32,6 +33,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.shellrider.minipainter.R
 import com.shellrider.minipainter.filesystem.imageNameToPath
+import com.shellrider.minipainter.ui.components.ProgressEntryCard
 import com.shellrider.minipainter.ui.components.TopBackground
 import com.shellrider.minipainter.ui.theme.CardColor
 import com.shellrider.minipainter.ui.theme.LightTextColor
@@ -177,8 +179,8 @@ fun MiniatureDetails(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
                     backgroundColor = CardColor,
-                    shape = RoundedCornerShape(10.dp)
-
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = 0.dp
                 ) {
                     OutlinedTextField(
                         modifier = Modifier.padding(16.dp),
@@ -192,6 +194,16 @@ fun MiniatureDetails(
                         },
                     )
                 }
+            }
+
+            item { Spacer(modifier = Modifier.height(16.dp)) }
+
+            items(progressEntries) {
+                ProgressEntryCard(
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
+                    progressEntry = it,
+                    context = context
+                )
             }
 
         }

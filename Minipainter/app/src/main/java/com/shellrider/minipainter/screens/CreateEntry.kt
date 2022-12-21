@@ -2,6 +2,7 @@ package com.shellrider.minipainter.screens
 
 import android.app.Application
 import android.graphics.BitmapFactory
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -45,15 +48,24 @@ fun CreateEntry(
         )
         viewModel
     }
+
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
 
     if (viewModel != null) {
         val cachedImagePath by viewModel.cachedImagePath.observeAsState()
         val miniatureName by viewModel.miniatureName.observeAsState()
+
+
         if (imageLocation != null) {
             viewModel.setCachedImagePath(imageLocation)
         }
-        Column {
+        Column(modifier = Modifier
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
+            }) {
             TopBackground("Create Entry")
             Column(
                 Modifier

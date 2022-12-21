@@ -59,7 +59,7 @@ fun MiniatureOverviewCard(
             Text(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 text = SimpleDateFormat("dd.MM.yyyy")
-                    .format(miniature.miniature.lastUpdated),
+                    .format(miniature.miniature.lastUpdated ?: ""),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.W400,
                 color = LightTextColor
